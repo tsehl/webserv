@@ -12,7 +12,19 @@
 #include <sys/select.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <fstream>
+#include <sstream>
+#include <cctype>
+#include <vector>
+
 using namespace std;
+
+
+int handle_requests(std::vector<std::string> data, int client_fd);
+int parsing_request(std::string buffer, int client_fd);
+std::vector<std::string> split(const std::string &s, char delim);
+
+
 
 class SocketFailedException : public std::exception
 {
@@ -24,6 +36,10 @@ class ConnectFailedException : public std::exception
     const char * what () const throw () {return ("Connect failure") ;}
 };
 
+class HttpErrorException : public std::exception
+{
+    const char * what () const throw () {return ("open http error file failed") ;}
+};
 
 class SelectFailedException : public std::exception
 {

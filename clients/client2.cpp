@@ -18,7 +18,7 @@ int main()
         long len = sizeof(address);
         if ((connect(client_fd,  (struct sockaddr *)&address, len)) < 0)
             throw ConnectFailedException();
-        send(client_fd, "hoiot", 5, 0);
+        send(client_fd, "hillo", 5, 0);
         valread = read(client_fd, &buffer[0], 1024); // Utilisation de i au lieu de client_fd
         if (valread < 0)
             throw ReadFailedException();

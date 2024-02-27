@@ -30,8 +30,3 @@ int main()
                 std::cerr << e.what() << std::endl;
     }
 }
-
-int ft_split(char *tab)
-{
-    
-}
