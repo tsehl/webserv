@@ -1,4 +1,5 @@
-#include "webserv.hpp"
+#ifndef SERVER_HPP
+# define SERVER_HPP
 
 class Server 
 {
@@ -38,4 +39,5 @@ class Server
         fd_set _sockets;
         int _port;
 };
-    
+
+#endif
