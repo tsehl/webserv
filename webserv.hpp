@@ -1,6 +1,3 @@
-#ifndef WEBSERV_HPP
-# define WEBSERV_HPP
-
 #include <iostream>
 #include <exception>
 #include <netinet/in.h>
@@ -19,25 +16,15 @@
 #include <sstream>
 #include <cctype>
 #include <vector>
-#include "Server.hpp"
 
 using namespace std;
 
 
 int handle_requests(std::vector<std::string> data, int client_fd);
 int parsing_request(std::string buffer, int client_fd);
-int parserConfig(std::vector<Server> server, std::string path_configfile);
 std::vector<std::string> split(const std::string &s, char delim);
 
-class ErrorConfigFileException : public std::exception
-{
-    const char * what () const throw () {return ("Error configuration file") ;}
-};
 
-class ErrorParserConfigException : public std::exception
-{
-    const char * what () const throw () {return ("Error parsing configuration file") ;}
-};
 
 class SocketFailedException : public std::exception
 {
@@ -69,14 +56,24 @@ class ListenFailedException : public std::exception
     const char * what () const throw () {return ("Listen failed") ;}
 };
 
+class ExecFailedException : public std::exception
+{
+    const char * what () const throw () {return ("execve failed") ;}
+};
+
 class AcceptFailedException : public std::exception
 {
     const char * what () const throw () {return ("Accept failed") ;}
 };
 
-class ReadFailedException : public std::exception
+class ForkfailedException : public std::exception
 {
-    const char * what () const throw () {return ("Read failed") ;}
+    const char * what () const throw () {return ("Fork error") ;}
+};
+
+class RecvFailedException : public std::exception
+{
+    const char * what () const throw () {return ("Recv failed") ;}
 };
 
 class ForkFailedException : public std::exception
@@ -89,4 +86,28 @@ class PipeFailedException : public std::exception
     const char * what () const throw () {return ("Pipe failed") ;}
 };
 
-#endif
+/*#include <iostream>
+#include <exception>
+#include <netinet/in.h>
+#include <sys/socket.h> 
+#include <cstring>
+
+class SocketFailedException : public std::exception
+{
+    const char * what () const throw () {return ("Socket failed") ;}
+};
+
+class BindFailedException : public std::exception
+{
+    const char * what () const throw () {return ("Binding failed") ;}
+};
+
+class ListenFailedException : public std::exception
+{
+    const char * what () const throw () {return ("Listen failed") ;}
+};
+
+class AcceptFailedException : public std::exception
+{
+    const char * what () const throw () {return ("Accept failed") ;}
+};*/

@@ -21,6 +21,7 @@ int handle_get(std::string path, int client_socket)
     while (getline(ifs, line))
             response << line << std::endl;
     ifs.close();
+    std::cout << "response :" << response << std::endl;
     ssize_t bytes_sent = send(client_socket, response.str().c_str(), response.str().size(), 0);
     if (bytes_sent < 0)
         std::cerr << "Erreur lors de l'envoi de données au client" << std::endl;

@@ -105,14 +105,25 @@ void Server::setPort(int port)
     _port = port;
 }
 
-int Server::getClientSocket() const
+vector<int> Server::getClientSocket() const
 {
-    return _client_socket;
+    return _client_sockets;
 }
 
-void Server::setClientSocket(int client_socket)
+int Server::getClientSocket(int index) const
 {
-    _client_socket = client_socket;
+    return _client_sockets[index];
+}
+
+int Server::getLastClientSocket() const
+{
+    return _client_sockets.back();
+}
+
+
+void Server::setClientSocket(vector<int> client_sockets)
+{
+    _client_sockets = client_sockets;
 }
 
 Server& Server::operator=(const Server& other) 
@@ -127,6 +138,11 @@ Server& Server::operator=(const Server& other)
     return *this;
 }
 
+void Server::addClient(int client_socket)
+{
+    _client_sockets.push_back(client_socket);
+}
+
 
 void Server::clearSockets(int i)
 {
@@ -135,11 +151,13 @@ void Server::clearSockets(int i)
 
 void Server::acceptClient()
 {
+    int fd;
     long len = sizeof(_address);
-    _client_socket = accept(_server_socket, (struct sockaddr *)&_address, (socklen_t*)&len);
-    if (_client_socket < 0)
+    fd = accept(_server_socket, (struct sockaddr *)&_address, (socklen_t*)&len);
+    if (fd < 0)
         throw AcceptFailedException();
-    FD_SET(_client_socket, &_sockets);
+    FD_SET(fd, &_sockets);
+    _client_sockets.push_back(fd);
 }
 
 
