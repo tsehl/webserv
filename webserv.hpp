@@ -38,7 +38,7 @@ class ConnectFailedException : public std::exception
 
 class HttpErrorException : public std::exception
 {
-    const char * what () const throw () {return ("open http error file failed") ;}
+    const char * what () const throw () {return ("open failed") ;}
 };
 
 class SelectFailedException : public std::exception

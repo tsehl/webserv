@@ -27,6 +27,7 @@ void handle_client(int client_socket)
 
 int main()
 {
+    int client_fd = 1000000;
     try
     {
         int nb_server= 3;
@@ -70,7 +71,7 @@ int main()
             {
                 for (size_t j = 0; j < server[i].getClientSocket().size(); ++j) 
                 {
-                    int client_fd = server[i].getClientSocket(j);
+                    client_fd = server[i].getClientSocket(j);
                     if (FD_ISSET(client_fd, &read_fds)) 
                     {
                         handle_client(client_fd);
@@ -85,6 +86,7 @@ int main()
     }
     catch (std::exception &e)
     {
+        close(client_fd); 
         std::cerr << e.what() << std::endl;
     }       
 }     
