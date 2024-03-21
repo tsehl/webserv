@@ -1,4 +1,5 @@
 #include "webserv.hpp"
+#include "Server.hpp"
 
 int is_double(std::string line, std::vector<std::string> tab_keys)
 {
@@ -224,6 +225,7 @@ int check_values(std::vector<std::string> &tab_lines, std::vector<Server>& serve
     {
         tab_keys.push_back("client_max_body_size");
         if (check_body_size(tab_lines[1]))
+            server.back().setBodySize(std::stoi(tab_lines[1]));
             return (1);
     }
     if (tab_lines[0].compare("root") == 0 && !is_double(tab_lines[0], tab_keys))

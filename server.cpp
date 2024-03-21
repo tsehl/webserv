@@ -80,6 +80,11 @@ int Server::getValRead() const
     return _valread;
 }
 
+int Server::getBodySize() const
+{
+    return _valread;
+}
+
 void Server::setValRead(int valread)
 {
     _valread = valread;
