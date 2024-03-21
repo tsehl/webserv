@@ -105,7 +105,7 @@ void Server::setPort(int port)
     _port = port;
 }
 
-vector<int> Server::getClientSocket() const
+std::vector<int> Server::getClientSocket() const
 {
     return _client_sockets;
 }
@@ -121,7 +121,7 @@ int Server::getLastClientSocket() const
 }
 
 
-void Server::setClientSocket(vector<int> client_sockets)
+void Server::setClientSocket(std::vector<int> client_sockets)
 {
     _client_sockets = client_sockets;
 }

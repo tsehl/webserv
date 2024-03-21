@@ -25,18 +25,44 @@ void handle_client(int client_socket)
     parsing_request(request, client_socket);
 }
 
-int main()
+std::string check_configfile(std::string path_configfile)
 {
-    int client_fd = 1000000;
+    std::string ext(5, 'a');
+    int index = 0;
+    for (size_t i = path_configfile.length() - 5; i < path_configfile.length(); i++)
+    {
+        ext[index] = path_configfile[i];
+        index++;
+    }
+    if (ext.compare(".conf") == 0 && path_configfile.length() > 5)
+        return (path_configfile);
+    return ("");
+}
+
+int main(int ac, char **ar)
+{
+    int client_fd = -1;
     try
     {
-        int nb_server= 3;
+        std::string path_configfile;
+        if (ac > 2)
+            throw ErrorConfigFileException();
+        if (ac == 1)
+            path_configfile = "config/default.conf";
+        else
+            path_configfile = check_configfile(ar[1]);
+        if (path_configfile == "")
+            throw ErrorConfigFileException();
+        //int nb_server= 3;
         int max_fd = -1;
-        int ports[] = {8080, 8081, 8082};
+        //int ports[] = {8080, 8081, 8082};
         std::vector<Server> server;
         fd_set read_fds, master_fds;
-        for (int i = 0; i < nb_server; i++)
-            server.push_back(Server(ports[i]));
+        int nb_server = parserConfig(server, path_configfile);
+        if (nb_server < 1)
+            throw ErrorParserConfigException();
+        /*for (int i = 0; i < nb_server; i++)
+            server.push_back(Server(ports[i]));*/
         //std::cout << "Servers have been created." << std::endl;
         FD_ZERO(&master_fds);
         for (int i = 0; i < nb_server; ++i)
@@ -86,7 +112,8 @@ int main()
     }
     catch (std::exception &e)
     {
-        close(client_fd); 
+        if (fcntl(client_fd, F_GETFL) > 0)
+            close(client_fd);
         std::cerr << e.what() << std::endl;
     }       
 }     

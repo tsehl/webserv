@@ -1,4 +1,7 @@
-#include "webserv.hpp"
+
+#ifndef SERVER_HPP
+# define SERVER_HPP
+# include "webserv.hpp"
 
 class Server 
 {
@@ -15,7 +18,7 @@ class Server
         void addClient(int client_sockets);
 
         // Getters
-        vector<int> getClientSocket() const;
+        std::vector<int> getClientSocket() const;
         int getClientSocket(int index) const;
         int getLastClientSocket() const;
         int getServerSocket() const;
@@ -25,7 +28,7 @@ class Server
         int getPort() const;
 
         // Setters
-        void setClientSocket(vector<int> clientSocket);
+        void setClientSocket(std::vector<int> clientSocket);
         void setServerSocket(int serverSocket);
         void setAddress(const struct sockaddr_in& address);
         void setValRead(int valRead);
@@ -34,7 +37,7 @@ class Server
 
     private:
 
-        vector<int> _client_sockets;
+        std::vector<int> _client_sockets;
         //int _client_socket;
         int _server_socket;
         struct sockaddr_in _address;
@@ -42,4 +45,5 @@ class Server
         fd_set _sockets;
         int _port;
 };
-    
+
+#endif
