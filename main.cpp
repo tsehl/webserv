@@ -1,9 +1,9 @@
 #include "Server.hpp"
 
 
-void handle_client(int client_socket) 
+void handle_client(size_t max_body_size, int client_socket) 
 {
-    char buffer [1000];
+    char buffer [100000];
     size_t bytes_received = sizeof(buffer);
     std::string request;
 
@@ -14,6 +14,11 @@ void handle_client(int client_socket)
         {   
             close(client_socket);
             throw RecvFailedException();
+        }
+        else if(bytes_received > max_body_size)
+        {
+            std::cout << bytes_received << " bd "<< max_body_size << std::endl;
+            request = "GET /html/400.html HTTP/1.1";
         }
         else if (bytes_received > 0) 
         {
@@ -67,6 +72,7 @@ int main(int ac, char **ar)
         FD_ZERO(&master_fds);
         for (int i = 0; i < nb_server; ++i)
         { 
+            std::cout << server[i].getBodySize() << " port "<< server[i].getPort() << std::endl;
             if (server[i].getServerSocket() > max_fd)
                 max_fd = server[i].getServerSocket();
             FD_SET(server[i].getServerSocket(), &master_fds);
@@ -100,7 +106,7 @@ int main(int ac, char **ar)
                     client_fd = server[i].getClientSocket(j);
                     if (FD_ISSET(client_fd, &read_fds)) 
                     {
-                        handle_client(client_fd);
+                        handle_client(server[i].getBodySize(), client_fd);
                         close(client_fd);
                         FD_CLR(client_fd, &read_fds);
                         FD_CLR(client_fd, &master_fds);

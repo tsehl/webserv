@@ -225,8 +225,11 @@ int check_values(std::vector<std::string> &tab_lines, std::vector<Server>& serve
     {
         tab_keys.push_back("client_max_body_size");
         if (check_body_size(tab_lines[1]))
+        {
             server.back().setBodySize(std::stoi(tab_lines[1]));
+            std::cout << server.back().getBodySize() << " port "<< server.back().getPort() << std::endl;
             return (1);
+        }
     }
     if (tab_lines[0].compare("root") == 0 && !is_double(tab_lines[0], tab_keys))
     {

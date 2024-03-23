@@ -4,6 +4,7 @@
 Server::Server() 
 {
     _port = 8080;
+    _body_size = 1000000;
     _server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (_server_socket < 0)
         throw SocketFailedException();
@@ -17,12 +18,13 @@ Server::Server()
         throw ListenFailedException();
     FD_ZERO(&_sockets);
     FD_SET(_server_socket, &_sockets);
-    std::cout << "Le serveur a été créé avec comme port : 8080" << std::endl;
+    std::cout << "Le serveur a été créé avec comme port : " << _port << std::endl;
 }
 
 Server::Server(int port) 
 {
     _port = port;
+    _body_size = 1000000;
     _server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (_server_socket < 0)
         throw SocketFailedException();
@@ -60,29 +62,28 @@ int Server::getServerSocket() const
     return _server_socket;
 }
 
-void Server::setServerSocket(int server_socket)
-{
-    _server_socket = server_socket;
-}
+
 
 struct sockaddr_in Server::getAddress() const
 {
     return _address;
 }
 
-void Server::setAddress(const struct sockaddr_in& address)
-{
-    _address = address;
-}
+
 
 int Server::getValRead() const
 {
     return _valread;
 }
 
-int Server::getBodySize() const
+size_t Server::getBodySize() const
 {
-    return _valread;
+    return _body_size;
+}
+
+fd_set Server::getSockets() const
+{
+    return _sockets;
 }
 
 void Server::setValRead(int valread)
@@ -90,9 +91,9 @@ void Server::setValRead(int valread)
     _valread = valread;
 }
 
-fd_set Server::getSockets() const
+void Server::setAddress(const struct sockaddr_in& address)
 {
-    return _sockets;
+    _address = address;
 }
 
 void Server::setSockets(const fd_set& sockets)
@@ -108,6 +109,16 @@ int Server::getPort() const
 void Server::setPort(int port)
 {
     _port = port;
+}
+
+void Server::setBodySize(size_t body_size)
+{
+    _body_size = body_size;
+}
+
+void Server::setServerSocket(int server_socket)
+{
+    _server_socket = server_socket;
 }
 
 std::vector<int> Server::getClientSocket() const

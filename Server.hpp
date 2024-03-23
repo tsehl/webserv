@@ -26,12 +26,12 @@ class Server
         int getValRead() const;
         fd_set getSockets() const;
         int getPort() const;
-        int getBodySize() const;
+        size_t getBodySize() const;
 
         // Setters
         void setClientSocket(std::vector<int> clientSocket);
         void setServerSocket(int serverSocket);
-        void setBodySize(int body_size);
+        void setBodySize(size_t body_size);
         void setAddress(const struct sockaddr_in& address);
         void setValRead(int valRead);
         void setSockets(const fd_set& sockets);
@@ -45,7 +45,7 @@ class Server
         int _valread;
         fd_set _sockets;
         int _port;
-        int _body_size;
+        size_t _body_size;
 };
 
 #endif
