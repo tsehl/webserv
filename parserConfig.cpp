@@ -227,7 +227,6 @@ int check_values(std::vector<std::string> &tab_lines, std::vector<Server>& serve
         if (check_body_size(tab_lines[1]))
         {
             server.back().setBodySize(std::stoi(tab_lines[1]));
-            std::cout << server.back().getBodySize() << " port "<< server.back().getPort() << std::endl;
             return (1);
         }
     }
@@ -405,5 +404,5 @@ int parserConfig(std::vector<Server>& server, std::string path_configfile)
         return (0);
     
     configfile.close();
-    return (2);
+    return (nb_server);
 }

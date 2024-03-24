@@ -21,6 +21,7 @@
 # include <cctype>
 # include <fcntl.h>
 # include <vector>
+# include <dirent.h>
 # include "Server.hpp"
 
 class Server;

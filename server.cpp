@@ -18,7 +18,7 @@ Server::Server()
         throw ListenFailedException();
     FD_ZERO(&_sockets);
     FD_SET(_server_socket, &_sockets);
-    std::cout << "Le serveur a été créé avec comme port : " << _port << std::endl;
+    //std::cout << "Le serveur a été créé avec comme port : " << _port << std::endl;
 }
 
 Server::Server(int port) 
@@ -38,7 +38,7 @@ Server::Server(int port)
         throw ListenFailedException();
     FD_ZERO(&_sockets);
     FD_SET(_server_socket, &_sockets);
-    std::cout << "Le serveur a été créé avec comme port : " << port << std::endl;
+    //std::cout << "Le serveur a été créé avec comme port : " << port << std::endl;
 }
 
 Server::~Server() 
@@ -53,6 +53,7 @@ Server::Server(const Server& other)
     _valread = other._valread;
     _sockets = other._sockets;
     _port = other._port;
+    _body_size = other._body_size;
     //std::cout << _port << std::endl;
     //std::cout << "Le serveur a été copié." << std::endl;
 }
@@ -144,12 +145,13 @@ void Server::setClientSocket(std::vector<int> client_sockets)
 
 Server& Server::operator=(const Server& other) 
 {
-    std::cout << "Le serveur a été assigné par copie." << std::endl;
+    //std::cout << "Le serveur a été assigné par copie." << std::endl;
     _server_socket = other._server_socket;
     _address = other._address;
     _valread = other._valread;
     _sockets = other._sockets;
     _port = other._port;
+    _body_size = other._body_size;
 
     return *this;
 }

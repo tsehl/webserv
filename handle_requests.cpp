@@ -5,6 +5,8 @@ int handle_get(std::string path, int client_socket)
     std::stringstream response;
     std::ifstream ifs;
     std::string line;
+    int is_file = 0;
+    DIR * dir = NULL;
     if (path == "/")
         path = "html/default.html";
     else
@@ -14,14 +16,33 @@ int handle_get(std::string path, int client_socket)
     response << "Connection: close\r\n";
     response << "\r\n";
     ifs.open (path, std::ifstream::in);
-    if(!ifs.is_open())
-        ifs.open ("html/404.html", std::ifstream::in);
-    if(!ifs.is_open())
-        throw HttpErrorException();
-    while (getline(ifs, line))
+    if(ifs.is_open())
+    {
+       while (getline(ifs, line))
+        {
             response << line << std::endl;
-    ifs.close();
-    std::cout << "response :" << response << std::endl;
+            is_file = 1;
+        }
+        ifs.close();
+    }
+    if (is_file == 0)
+    {
+        dir = opendir(path.c_str());
+        if (dir != NULL) 
+        {
+            dirent* entry;
+            while ((entry = readdir(dir)) != NULL) 
+                    response << "<li><a href='" << path << "/" << entry->d_name << "'>" << entry->d_name << "</a></li>";
+             closedir(dir);
+        }
+        else
+        {
+            ifs.open ("html/404.html", std::ifstream::in);
+            if(!ifs.is_open())
+                throw HttpErrorException();
+        }
+    }
+    //std::cout << "response : \n" << response.str() << std::endl;
     ssize_t bytes_sent = send(client_socket, response.str().c_str(), response.str().size(), 0);
     if (bytes_sent < 0)
         std::cerr << "Erreur lors de l'envoi de données au client" << std::endl;

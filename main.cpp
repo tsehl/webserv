@@ -6,7 +6,6 @@ void handle_client(size_t max_body_size, int client_socket)
     char buffer [100000];
     size_t bytes_received = sizeof(buffer);
     std::string request;
-
     while (bytes_received >= sizeof(buffer))
     {
         bytes_received = recv(client_socket, buffer, sizeof(buffer), 0);
@@ -17,8 +16,9 @@ void handle_client(size_t max_body_size, int client_socket)
         }
         else if(bytes_received > max_body_size)
         {
-            std::cout << bytes_received << " bd "<< max_body_size << std::endl;
+            std::cout << bytes_received << " recu, soit plus que le max : "<< max_body_size << std::endl;
             request = "GET /html/400.html HTTP/1.1";
+            bytes_received = 0;
         }
         else if (bytes_received > 0) 
         {
@@ -26,7 +26,7 @@ void handle_client(size_t max_body_size, int client_socket)
             request.append(buffer);
         }
     }
-    std::cout << request << std::endl;
+    std::cout << "request : \n" << request << std::endl;
     parsing_request(request, client_socket);
 }
 
@@ -58,17 +58,13 @@ int main(int ac, char **ar)
             path_configfile = check_configfile(ar[1]);
         if (path_configfile == "")
             throw ErrorConfigFileException();
-        //int nb_server= 3;
         int max_fd = -1;
-        //int ports[] = {8080, 8081, 8082};
         std::vector<Server> server;
         fd_set read_fds, master_fds;
         int nb_server = parserConfig(server, path_configfile);
         if (nb_server < 1)
-            throw ErrorParserConfigException();
-        /*for (int i = 0; i < nb_server; i++)
-            server.push_back(Server(ports[i]));*/
-        //std::cout << "Servers have been created." << std::endl;
+            throw ErrorParserConfigException();;
+        //std::cout << nb_server << std::endl;
         FD_ZERO(&master_fds);
         for (int i = 0; i < nb_server; ++i)
         { 
@@ -80,7 +76,7 @@ int main(int ac, char **ar)
         while (1) 
         {
             read_fds = master_fds;
-            if (select(FD_SETSIZE, &read_fds, nullptr, nullptr, nullptr) < 0)
+            if (select(FD_SETSIZE, &read_fds, NULL, NULL, NULL) < 0)
                 throw SelectFailedException(); 
 
             for (int i = 0; i < max_fd; ++i) 
@@ -88,17 +84,14 @@ int main(int ac, char **ar)
                 if (FD_ISSET(server[i].getServerSocket(), &read_fds)) 
                 {
                     server[i].acceptClient();
-                    if (server[i].getLastClientSocket() < 0) {
+                    if (server[i].getLastClientSocket() < 0)
                         std::cerr << "Erreur lors de l'acceptation de la connexion client" << std::endl;
-                }
                 if (server[i].getLastClientSocket() > max_fd)
                     max_fd = server[i].getLastClientSocket();
-                std::cout << "Nouvelle connexion sur le serveur " << i << std::endl;
-                FD_SET(server[i].getLastClientSocket(), &master_fds); // Ajout du descripteur à l'ensemble maître
+                //std::cout << "Nouvelle connexion sur le serveur " << i << std::endl;
+                FD_SET(server[i].getLastClientSocket(), &master_fds); 
                 }
             }
-
-        // Parcourir les descripteurs pour les clients
             for (int i = 0; i < nb_server; ++i) 
             {
                 for (size_t j = 0; j < server[i].getClientSocket().size(); ++j) 
@@ -123,25 +116,3 @@ int main(int ac, char **ar)
         std::cerr << e.what() << std::endl;
     }       
 }     
-            /*for (int i = 0; i < nb_server; i++)
-            {
-                std::cout << "Server " << i << " is listening on port " << server[i].getPort() << std::endl;
-                ready_sockets = server[i].getSockets();
-                if (select(FD_SETSIZE, &ready_sockets, NULL, NULL, NULL) < 0)
-                    throw SelectFailedException();
-                for (int j = 0; j < FD_SETSIZE; j++) 
-                {
-                    if (FD_ISSET(j, &ready_sockets)) 
-                    {
-                        if (j == server[i].getServerSocket()) 
-                            server[i].acceptClient();
-                        else 
-                        {
-                            handle_client(j);
-                            server[i].clearSockets(j);
-                            close(j);
-                        }
-                    }
-                }
-            }*/
-

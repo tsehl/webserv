@@ -15,13 +15,13 @@ bool is_cgi_script(const std::string& path)
 
 void handle_cgi_script(int client_socket, std::string script_path) {
     // Créer un processus fils pour exécuter le script CGI
-    std::cout << "CGI script detected" << std::endl;
+    //std::cout << "CGI script detected" << std::endl;
     pid_t pid = fork();
     if (pid < 0) {
         throw ForkFailedException();
     } else if (pid == 0) {
         script_path.insert(0, "/Users/thsehl/Documents/webserv");
-        std::cout << script_path << std::endl;
+        //std::cout << script_path << std::endl;
         dup2(client_socket, STDOUT_FILENO);
         dup2(client_socket, STDIN_FILENO);
         
