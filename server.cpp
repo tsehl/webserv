@@ -152,6 +152,7 @@ Server& Server::operator=(const Server& other)
     _sockets = other._sockets;
     _port = other._port;
     _body_size = other._body_size;
+    _client_sockets = other._client_sockets;
 
     return *this;
 }
@@ -161,6 +162,10 @@ void Server::addClient(int client_socket)
     _client_sockets.push_back(client_socket);
 }
 
+void Server::removeClient(int i)
+{
+     _client_sockets.erase(_client_sockets.begin() + i);
+}
 
 void Server::clearSockets(int i)
 {

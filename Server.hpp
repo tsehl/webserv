@@ -37,6 +37,8 @@ class Server
         void setSockets(const fd_set& sockets);
         void setPort(int port);
 
+        void removeClient(int i);
+
     private:
 
         std::vector<int> _client_sockets;

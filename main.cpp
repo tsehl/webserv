@@ -26,7 +26,7 @@ void handle_client(size_t max_body_size, int client_socket)
             request.append(buffer);
         }
     }
-    std::cout << "request : \n" << request << std::endl;
+    //std::cout << "request : \n" << request << std::endl;
     parsing_request(request, client_socket);
 }
 
@@ -103,6 +103,7 @@ int main(int ac, char **ar)
                         close(client_fd);
                         FD_CLR(client_fd, &read_fds);
                         FD_CLR(client_fd, &master_fds);
+                        server[i].removeClient(j);
                     }
                 }
             }
