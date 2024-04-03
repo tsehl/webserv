@@ -8,8 +8,6 @@ Server::Server()
     _server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (_server_socket < 0)
         throw SocketFailedException();
-    int opt = 1;
-    setsockopt(_server_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     memset((char *)&_address, 0, sizeof(_address)); 
     _address.sin_family = AF_INET; 
     _address.sin_addr.s_addr = htonl(INADDR_ANY); 
@@ -30,8 +28,6 @@ Server::Server(int port)
     _server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (_server_socket < 0)
         throw SocketFailedException();
-    int opt = 1;
-    setsockopt(_server_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     memset((char *)&_address, 0, sizeof(_address)); 
     _address.sin_family = AF_INET; 
     _address.sin_addr.s_addr = htonl(INADDR_ANY); 

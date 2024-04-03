@@ -40,9 +40,6 @@ int handle_get(std::string path, int client_socket)
             ifs.open ("html/404.html", std::ifstream::in);
             if(!ifs.is_open())
                 throw HttpErrorException();
-            while (getline(ifs, line))
-                response << line << std::endl;
-            ifs.close();
         }
     }
     //std::cout << "response : \n" << response.str() << std::endl;

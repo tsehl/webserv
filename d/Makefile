@@ -5,7 +5,6 @@ SRCS			=	Server.cpp \
 					handle_requests.cpp \
 					main.cpp \
 					parserConfig.cpp \
-					parse_upload.cpp \
 
 CC				=	g++
 

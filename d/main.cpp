@@ -1,37 +1,32 @@
 #include "Server.hpp"
-#define BUFFER_SIZE 512
+
 
 void handle_client(size_t max_body_size, int client_socket) 
 {
-    char buffer[BUFFER_SIZE];
-    long long bytes_received = 0;
-    std::string request = "";
-    //const int max_body_size = 10000; // Exemple de taille maximale.
-
-    do
+    char buffer [100000];
+    size_t bytes_received = sizeof(buffer);
+    std::string request;
+    while (bytes_received >= sizeof(buffer))
     {
-        usleep(100);
-        bytes_received = recv(client_socket, buffer, BUFFER_SIZE - 1, MSG_DONTWAIT);
-        std::cout << "bytes_received : " << bytes_received << std::endl;
-        if (bytes_received > 0) 
-        {
-            buffer[bytes_received] = '\0';
-            request.append(buffer);
-            if (request.length() > max_body_size) 
-            {
-                std::cout << "La taille de la requête dépasse la limite autorisée.\n";
-                request = "GET /html/400.html HTTP/1.1";
-                break;
-            }
-        }
-        else if (bytes_received < 0) 
-        {
+        bytes_received = recv(client_socket, buffer, sizeof(buffer), 0);
+        if (bytes_received < 0) 
+        {   
             close(client_socket);
             throw RecvFailedException();
         }
-    } while (static_cast<unsigned long>(bytes_received) >= sizeof(buffer) - 1);
-    
-    //std::cout << "Request:\n" << request << std::endl << request.size() << std::endl;
+        else if(bytes_received > max_body_size)
+        {
+            std::cout << bytes_received << " recu, soit plus que le max : "<< max_body_size << std::endl;
+            request = "GET /html/400.html HTTP/1.1";
+            bytes_received = 0;
+        }
+        else if (bytes_received > 0) 
+        {
+            buffer[bytes_received] = '\0';
+            request.append(buffer);
+        }
+    }
+    //std::cout << "request : \n" << request << std::endl;
     parsing_request(request, client_socket);
 }
 

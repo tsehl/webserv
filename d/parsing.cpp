@@ -2,6 +2,7 @@
 
 bool is_cgi_script(const std::string& path) 
 {
+    // Vérifier si le chemin se termine par l'extension .cgi
     static const std::string cgi_extension = ".cgi";
 
     if (path.size() >= cgi_extension.size() &&
@@ -12,34 +13,18 @@ bool is_cgi_script(const std::string& path)
     return false;
 }
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-
-// Structure pour stocker les données d'un champ de formulaire
-struct FormData {
-    std::string name;
-    std::string filename;
-    std::string contentType;
-    std::string data;
-};
-
-
-
-
-void handle_cgi_script(int client_socket, std::string script_path, std::string request) {
-
-    parse_upload(request, client_socket);
+void handle_cgi_script(int client_socket, std::string script_path) {
+    // Créer un processus fils pour exécuter le script CGI
+    //std::cout << "CGI script detected" << std::endl;
     pid_t pid = fork();
     if (pid < 0) {
         throw ForkFailedException();
     } else if (pid == 0) {
         script_path.insert(0, "/Users/thsehl/Documents/webserv");
-        std::cout << "script : " << script_path << std::endl;
+        //std::cout << script_path << std::endl;
         dup2(client_socket, STDOUT_FILENO);
         dup2(client_socket, STDIN_FILENO);
+        
         
         execve(script_path.c_str(), NULL, NULL);
 
@@ -51,15 +36,15 @@ void handle_cgi_script(int client_socket, std::string script_path, std::string r
 }
 
 
-int parsing_request(std::string request, int client_fd)
+int parsing_request(std::string buffer, int client_fd)
 {
-    if(isspace(request[0]))
+    if(isspace(buffer[0]))
         return 0;
-    std::vector<std::string> data = split(request, ' ');
+    std::vector<std::string> data = split(buffer, ' ');
     /*std::cout << data[0] << std::endl;
     std::cout << data[1] << std::endl;*/
     if (is_cgi_script(data[1]))
-        handle_cgi_script(client_fd, data[1], request);
+        handle_cgi_script(client_fd, data[1]);
     else
         handle_requests(data, client_fd);
     return 1;
