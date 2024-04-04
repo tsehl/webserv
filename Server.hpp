@@ -27,6 +27,9 @@ class Server
         fd_set getSockets() const;
         int getPort() const;
         size_t getBodySize() const;
+        std::string getHost() const;
+        std::string getServerName() const;
+        std::string getRoot() const;
 
         // Setters
         void setClientSocket(std::vector<int> clientSocket);
@@ -36,6 +39,9 @@ class Server
         void setValRead(int valRead);
         void setSockets(const fd_set& sockets);
         void setPort(int port);
+        void setHost(std::string host);
+        void setServerName(std::string server_name);
+        void setRoot(std::string root);
 
         void removeClient(int i);
 
@@ -48,6 +54,11 @@ class Server
         fd_set _sockets;
         int _port;
         size_t _body_size;
+        std::string _host;
+        std::string _server_name;
+        std::string _root;
+
+
 };
 
 #endif

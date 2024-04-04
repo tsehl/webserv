@@ -86,6 +86,19 @@ size_t Server::getBodySize() const
     return _body_size;
 }
 
+std::string Server::getHost() const
+{
+    return _host;
+}
+std::string Server::getServerName() const
+{
+    return _server_name;
+}
+std::string Server::getRoot() const
+{
+    return _root;
+}
+
 fd_set Server::getSockets() const
 {
     return _sockets;
@@ -119,6 +132,21 @@ void Server::setPort(int port)
 void Server::setBodySize(size_t body_size)
 {
     _body_size = body_size;
+}
+
+void Server::setHost(std::string host)
+{
+    _host = host;
+}
+
+void Server::setServerName(std::string server_name)
+{
+    _server_name = server_name;
+}
+
+void Server::setRoot(std::string root)
+{
+    _root = root;
 }
 
 void Server::setServerSocket(int server_socket)

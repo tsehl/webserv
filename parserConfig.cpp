@@ -213,13 +213,19 @@ int check_values(std::vector<std::string> &tab_lines, std::vector<Server>& serve
     {
         tab_keys.push_back("host");
         if (check_host(tab_lines[1]))
+        {
+            server.back().setHost(tab_lines[1].substr(0, tab_lines[1].length() - 1));
             return (1);
+        }
     }
     if (tab_lines[0].compare("server_name") == 0 && !is_double(tab_lines[0], tab_keys))
     {
         tab_keys.push_back("server_name");
         if (check_server_name(tab_lines[1]))
+        {
+            server.back().setServerName(tab_lines[1].substr(0, tab_lines[1].length() - 1));
             return (1);
+        }
     }
     if (tab_lines[0].compare("client_max_body_size") == 0 && !is_double(tab_lines[0], tab_keys))
     {
@@ -227,6 +233,7 @@ int check_values(std::vector<std::string> &tab_lines, std::vector<Server>& serve
         if (check_body_size(tab_lines[1]))
         {
             server.back().setBodySize(std::stoi(tab_lines[1]));
+            //std::cout << server[0].getBodySize() << std::endl;
             return (1);
         }
     }
@@ -234,7 +241,10 @@ int check_values(std::vector<std::string> &tab_lines, std::vector<Server>& serve
     {
         tab_keys.push_back("root");
         if (check_root(tab_lines[1]))
+        {   
+            server.back().setRoot(tab_lines[1].substr(0, tab_lines[1].length() - 1));
             return(1);
+        }
     }
     if (tab_lines[0].compare("allow") == 0 || tab_lines[0].compare("deny") == 0)
     {
