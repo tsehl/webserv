@@ -69,11 +69,12 @@ int main(int ac, char **ar)
         int nb_server = parserConfig(server, path_configfile);
         if (nb_server < 1)
             throw ErrorParserConfigException();;
-        /*for (size_t i = 0; i < server.size(); i++)
+        for (size_t i = 0; i < server.size(); i++)
         {
-            //std::cout << server[i].getBodySize() << std::endl;
-            std::cout << server[i].getHost() << std::endl;
-        }*/
+            std::cout << server[i].getBodySize() << std::endl;
+            std::cout << server[i].getServerName() << std::endl;
+            std::cout << server[i].getPort() << std::endl;
+        }
        //std::cout << server[0].getHost() << std::endl;
         FD_ZERO(&master_fds);
         for (int i = 0; i < nb_server; ++i)

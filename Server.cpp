@@ -25,6 +25,7 @@ Server::Server()
 
 Server::Server(int port) 
 {
+    _server_name = "default";
     _port = port;
     _body_size = 1000000;
     _server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -58,6 +59,10 @@ Server::Server(const Server& other)
     _sockets = other._sockets;
     _port = other._port;
     _body_size = other._body_size;
+    _server_name = other._server_name;
+    _host = other._host;
+    _root = other._root;
+    _client_sockets = other._client_sockets;
     //std::cout << _port << std::endl;
     //std::cout << "Le serveur a été copié." << std::endl;
 }
