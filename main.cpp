@@ -68,14 +68,8 @@ int main(int ac, char **ar)
         fd_set read_fds, master_fds;
         int nb_server = parserConfig(server, path_configfile);
         if (nb_server < 1)
-            throw ErrorParserConfigException();;
-        for (size_t i = 0; i < server.size(); i++)
-        {
-            std::cout << server[i].getBodySize() << std::endl;
-            std::cout << server[i].getServerName() << std::endl;
-            std::cout << server[i].getPort() << std::endl;
-        }
-       //std::cout << server[0].getHost() << std::endl;
+            throw ErrorParserConfigException();
+        std::cout << server[0].getMapError().at(401) << std::endl;
         FD_ZERO(&master_fds);
         for (int i = 0; i < nb_server; ++i)
         { 
@@ -99,7 +93,6 @@ int main(int ac, char **ar)
                         std::cerr << "Erreur lors de l'acceptation de la connexion client" << std::endl;
                 if (server[i].getLastClientSocket() > max_fd)
                     max_fd = server[i].getLastClientSocket();
-                //std::cout << "Nouvelle connexion sur le serveur " << i << std::endl;
                 FD_SET(server[i].getLastClientSocket(), &master_fds); 
                 }
             }

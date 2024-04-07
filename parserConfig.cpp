@@ -197,7 +197,7 @@ int check_cgi_bin(std::string &value)
     return (0);
 }
 
-int check_values(std::vector<std::string> &tab_lines, std::vector<Server>& server, std::vector<std::string> &tab_keys)
+int check_values(std::vector<std::string> &tab_lines, std::vector<Server>& server, std::vector<std::string> &tab_keys,  std::map<size_t, std::string> &map)
 {
 
     if (tab_lines[0].compare("listen") == 0 && !is_double(tab_lines[0], tab_keys))
@@ -233,7 +233,6 @@ int check_values(std::vector<std::string> &tab_lines, std::vector<Server>& serve
         if (check_body_size(tab_lines[1]))
         {
             server.back().setBodySize(std::stoi(tab_lines[1]));
-            //std::cout << server[0].getBodySize() << std::endl;
             return (1);
         }
     }
@@ -248,13 +247,26 @@ int check_values(std::vector<std::string> &tab_lines, std::vector<Server>& serve
     }
     if (tab_lines[0].compare("allow") == 0 || tab_lines[0].compare("deny") == 0)
     {
+
         if (check_requests(tab_lines[1], tab_keys))
+        {
+            if (tab_lines[0].compare("allow") == 0 && tab_lines[1].compare("GET;") == 0)
+                server.back().setAllowGet(1);
+            if (tab_lines[0].compare("allow") == 0 && tab_lines[1].compare("POST;") == 0)
+                server.back().setAllowPost(1);
+            if (tab_lines[0].compare("allow") == 0 && tab_lines[1].compare("DELETE;") == 0)
+                server.back().setAllowDelete(1);
             return (1);
+        }
     }
     if (tab_lines[0].compare("error_page") == 0)
     {
         if (check_error_page(tab_lines[1], tab_lines[2]))
+        {
+            map.insert(std::make_pair(std::stoi(tab_lines[1]), tab_lines[2]));
+            server.back().setMapError(map);
             return (1);
+        }
     }
     if (tab_lines[0].compare("") == 0)
         return (1);
@@ -339,7 +351,7 @@ int is_location(std::vector<std::string> &tab_lines, std::vector<std::string> &t
     return (1);
 }
 
-int check_line(std::string line, std::vector<Server>& server, std::vector<std::string> &tab_keys, std::ifstream *configfile, std::vector<std::string> &tab_paths_location)
+int check_line(std::string line, std::vector<Server>& server, std::vector<std::string> &tab_keys, std::ifstream *configfile, std::vector<std::string> &tab_paths_location, std::map<size_t, std::string> &map)
 {
     std::vector<std::string> tab_lines;
     tab_lines.push_back("");
@@ -364,7 +376,7 @@ int check_line(std::string line, std::vector<Server>& server, std::vector<std::s
         if (!is_closed(line))
             return (0);
     }
-    if (!check_values(tab_lines, server, tab_keys) && !is_closed(line))
+    if (!check_values(tab_lines, server, tab_keys, map) && !is_closed(line))
         return (0);
     return (1);
 }
@@ -373,6 +385,7 @@ int check_server(std::ifstream *configfile, std::vector<Server>& server)
 {
     int nb_server = 0;
     std::string line = "";
+    std::map<size_t, std::string> map;
 
     while (std::getline(*configfile, line))
     {
@@ -388,7 +401,7 @@ int check_server(std::ifstream *configfile, std::vector<Server>& server)
             nb_server++;
             while (std::getline(*configfile, line) && !is_closed(line))
             {
-                if(!check_line(line, server, tab_keys, configfile, tab_paths_location))
+                if(!check_line(line, server, tab_keys, configfile, tab_paths_location, map))
                     return (0);    
             }
             if (!is_closed(line))
