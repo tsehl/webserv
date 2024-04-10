@@ -12,43 +12,41 @@ bool is_cgi_script(const std::string& path)
     return false;
 }
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-
-// Structure pour stocker les données d'un champ de formulaire
-struct FormData {
-    std::string name;
-    std::string filename;
-    std::string contentType;
-    std::string data;
-};
-
-
-
-
 void handle_cgi_script(int client_socket, std::string script_path, std::string request) {
+    std::string formData = parseMultipartFormData(request);
+    if (formData.empty()) 
+        throw InvalidFormDataException();
+    
+    script_path.insert(0, "/Users/thsehl/Documents/webserv-1");
 
-    parse_upload(request, client_socket);
+    // Créer un tableau d'arguments pour execve
+    const char *args[] = {
+        "/usr/bin/python3", // Chemin vers l'interpréteur Python
+        script_path.c_str(), // Chemin absolu du script CGI Python
+        formData.c_str(), // Données du formulaire
+        nullptr // Marqueur de fin de tableau
+    };
+
     pid_t pid = fork();
-    if (pid < 0) {
+    if (pid < 0)
         throw ForkFailedException();
-    } else if (pid == 0) {
-        script_path.insert(0, "/Users/thsehl/Documents/webserv");
-        std::cout << "script : " << script_path << std::endl;
-        dup2(client_socket, STDOUT_FILENO);
-        dup2(client_socket, STDIN_FILENO);
-        
-        execve(script_path.c_str(), NULL, NULL);
+    else if (pid == 0) {    
+        // Exécuter le script Python
+        execve("/usr/bin/python3", const_cast<char**>(args), nullptr);
 
+        // Si execve échoue, lancez une exception
         throw ExecFailedException();
     } else {
+        // Attendre la fin de l'exécution du script CGI
         int status;
         waitpid(pid, &status, 0);
     }
+    close(client_socket);
 }
+
+
+
+
 
 
 int parsing_request(std::string request, int client_fd)
@@ -71,9 +69,8 @@ std::vector<std::string> split(const std::string &s, char delim)
     std::istringstream iss(s);
     std::string token;
 
-    while (std::getline(iss, token, delim)) {
+    while (std::getline(iss, token, delim))
         tokens.push_back(token);
-    }
     return tokens;
 }
 
