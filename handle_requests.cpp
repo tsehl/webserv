@@ -54,7 +54,10 @@ int handle_get(std::string path, int client_socket)
 
 int handle_requests(std::vector<std::string> data, int client_fd)
 {
-    
+    std::cout << data[1] << std::endl;
+    size_t pos = data[1].find("Users");
+    if (pos != std::string::npos)
+        data[1].replace(pos, 5, "html");
     if (data[0] == "GET") {
         handle_get(data[1], client_fd);
     /*} else if (data[0] == "POST") {

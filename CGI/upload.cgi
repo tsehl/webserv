@@ -12,8 +12,11 @@ def create_file(data):
     filename_end_index = data.find('"', filename_start_index)
     filename = data[filename_start_index:filename_end_index]
 
+    # Trouver l'index de fin du contenu du fichier
+    file_content_end_index = data.rfind('\n')
+
     # Extraire le contenu du fichier
-    file_content = data[file_content_start_index:]
+    file_content = data[file_content_start_index:file_content_end_index]
 
     # Écrire le contenu dans le fichier
     with open(filename, 'w') as file:
@@ -31,5 +34,4 @@ form_data = sys.argv[1]
 
 # Créer le fichier en utilisant les données du formulaire
 create_file(form_data)
-
 

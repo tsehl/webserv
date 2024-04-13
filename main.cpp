@@ -12,7 +12,7 @@ void handle_client(size_t max_body_size, int client_socket)
     {
         usleep(100);
         bytes_received = recv(client_socket, buffer, BUFFER_SIZE - 1, MSG_DONTWAIT);
-        std::cout << "bytes_received : " << bytes_received << std::endl;
+        //std::cout << "bytes_received : " << bytes_received << std::endl;
         if (bytes_received > 0) 
         {
             buffer[bytes_received] = '\0';
@@ -68,11 +68,18 @@ int main(int ac, char **ar)
         fd_set read_fds, master_fds;
         int nb_server = parserConfig(server, path_configfile);
         if (nb_server < 1)
-            throw ErrorParserConfigException();
+            throw ErrorParserConfigException();;
+        for (size_t i = 0; i < server.size(); i++)
+        {
+            //std::cout << server[i].getBodySize() << std::endl;
+            //std::cout << server[i].getServerName() << std::endl;
+            //std::cout << server[i].getPort() << std::endl;
+        }
+       //std::cout << server[0].getHost() << std::endl;
         FD_ZERO(&master_fds);
         for (int i = 0; i < nb_server; ++i)
         { 
-            std::cout << server[i].getBodySize() << " port "<< server[i].getPort() << std::endl;
+            //std::cout << server[i].getBodySize() << " port "<< server[i].getPort() << std::endl;
             if (server[i].getServerSocket() > max_fd)
                 max_fd = server[i].getServerSocket();
             FD_SET(server[i].getServerSocket(), &master_fds);
@@ -92,6 +99,7 @@ int main(int ac, char **ar)
                         std::cerr << "Erreur lors de l'acceptation de la connexion client" << std::endl;
                 if (server[i].getLastClientSocket() > max_fd)
                     max_fd = server[i].getLastClientSocket();
+                //std::cout << "Nouvelle connexion sur le serveur " << i << std::endl;
                 FD_SET(server[i].getLastClientSocket(), &master_fds); 
                 }
             }

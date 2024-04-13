@@ -2,12 +2,7 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 # include "webserv.hpp"
-# include "Location.hpp"
 
-
-#include <map>
-
-class Location;
 class Server 
 {
     public:
@@ -35,11 +30,6 @@ class Server
         std::string getHost() const;
         std::string getServerName() const;
         std::string getRoot() const;
-        int getAllowGet() const;
-        int getAllowPost() const;
-        int getAllowDelete() const;
-        std::map<size_t, std::string> getMapError() const;
-        std::vector<Location> getVecLocation() const;
 
         // Setters
         void setClientSocket(std::vector<int> clientSocket);
@@ -52,11 +42,6 @@ class Server
         void setHost(std::string host);
         void setServerName(std::string server_name);
         void setRoot(std::string root);
-        void setAllowGet(int allow_get);
-        void setAllowPost(int allow_post);
-        void setAllowDelete(int allow_delete);
-        void setMapError(std::map<size_t, std::string> map_error);
-        void setVecLocation(std::vector<Location> vec_location);
 
         void removeClient(int i);
 
@@ -72,13 +57,6 @@ class Server
         std::string _host;
         std::string _server_name;
         std::string _root;
-        int _allow_get;
-        int _allow_post;
-        int _allow_delete;
-        std::map<size_t, std::string> _map_error;
-        std::vector<Location> _vec_location;
-
-
 
 
 };

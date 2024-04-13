@@ -28,9 +28,6 @@ Server::Server(int port)
     _server_name = "default";
     _port = port;
     _body_size = 1000000;
-    _allow_get = 0;
-    _allow_post = 0;
-    _allow_delete = 0;
     _server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (_server_socket < 0)
         throw SocketFailedException();
@@ -46,6 +43,7 @@ Server::Server(int port)
         throw ListenFailedException();
     FD_ZERO(&_sockets);
     FD_SET(_server_socket, &_sockets);
+    //std::cout << "Le serveur a été créé avec comme port : " << port << std::endl;
 }
 
 Server::~Server() 
@@ -65,11 +63,8 @@ Server::Server(const Server& other)
     _host = other._host;
     _root = other._root;
     _client_sockets = other._client_sockets;
-    _allow_get = other._allow_get;
-    _allow_post = other._allow_post;
-    _allow_delete = other._allow_delete;
-    _map_error = other._map_error;
-    _vec_location = other._vec_location;
+    //std::cout << _port << std::endl;
+    //std::cout << "Le serveur a été copié." << std::endl;
 }
 
 int Server::getServerSocket() const
@@ -77,10 +72,14 @@ int Server::getServerSocket() const
     return _server_socket;
 }
 
+
+
 struct sockaddr_in Server::getAddress() const
 {
     return _address;
 }
+
+
 
 int Server::getValRead() const
 {
@@ -104,31 +103,6 @@ std::string Server::getRoot() const
 {
     return _root;
 }
-
-int Server::getAllowGet() const
-{
-    return _allow_get;
-}
-
-int Server::getAllowPost() const
-{
-    return _allow_post;
-}
-
-int Server::getAllowDelete() const
-{
-    return _allow_delete;
-}
-
-std::map<size_t, std::string> Server::getMapError() const
-{
-    return _map_error;
-}
-
- std::vector<Location> Server::getVecLocation() const
- {
-    return _vec_location;
- }
 
 fd_set Server::getSockets() const
 {
@@ -178,29 +152,6 @@ void Server::setServerName(std::string server_name)
 void Server::setRoot(std::string root)
 {
     _root = root;
-}
-
-void Server::setAllowGet(int allow_get)
-{
-    _allow_get = allow_get;
-}
-void Server::setAllowPost(int allow_post)
-{
-    _allow_post = allow_post;
-}
-void Server::setAllowDelete(int allow_delete)
-{
-    _allow_delete = allow_delete;
-}
-
-void Server::setMapError(std::map<size_t, std::string> map_error)
-{
-    _map_error = map_error;
-}
-
-void Server::setVecLocation(std::vector<Location> vec_location)
-{
-    _vec_location = vec_location;
 }
 
 void Server::setServerSocket(int server_socket)
