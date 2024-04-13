@@ -2,6 +2,16 @@
 
 Location::Location()
 {
+    _path = "./location";
+    _allow_get = 0;
+    _allow_post = 0;
+    _allow_delete = 0;
+    _autonindex = 0;
+}
+
+Location::Location(std::string path)
+{
+    _path = path;
     _allow_get = 0;
     _allow_post = 0;
     _allow_delete = 0;
@@ -15,10 +25,12 @@ Location::~Location()
 
 Location::Location(const Location& other)
 :
+    
     _allow_get(other._allow_get),
     _allow_post(other._allow_post),
     _allow_delete(other._allow_delete),
     _autonindex(other._autonindex),
+    _path(other._path),
     _root(other._root),
     _index(other._index),
     _upload_store(other._upload_store),
@@ -37,6 +49,7 @@ Location& Location::operator=(const Location& other)
     _index = other._index;
     _upload_store = other._upload_store;
     _cgi_bin = other._cgi_bin;
+    _path = other._path;
 
     return *this;
 }
@@ -49,6 +62,11 @@ int Location::getAllowGet() const
 int Location::getAllowPost() const 
 {
     return _allow_post;
+}
+
+std::string Location::getPath() const 
+{
+    return _path;
 }
 
 int Location::getAllowDelete() const 
@@ -94,6 +112,11 @@ std::map<std::string, std::string> Location::getMapCgiPass() const
 void Location::setAllowGet(int allow_get) 
 {
     _allow_get = allow_get;
+}
+
+void Location::setPath(const std::string& path) 
+{
+    _path = path;
 }
 
 void Location::setAllowPost(int allow_post) 

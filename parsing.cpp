@@ -49,7 +49,7 @@ void handle_cgi_script(int client_socket, std::string script_path, std::string r
 
 
 
-int parsing_request(std::string request, int client_fd)
+int parsing_request(std::string request, int client_fd, std::vector<Location> locations)
 {
     if(isspace(request[0]))
         return 0;
@@ -59,7 +59,7 @@ int parsing_request(std::string request, int client_fd)
     if (is_cgi_script(data[1]))
         handle_cgi_script(client_fd, data[1], request);
     else
-        handle_requests(data, client_fd);
+        handle_requests(data, client_fd, locations);
     return 1;
 }
 

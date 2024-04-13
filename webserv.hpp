@@ -26,12 +26,14 @@
 //# include <map>
 
 class Server;
+class Location;
 
-int handle_requests(std::vector<std::string> data, int client_fd);
-int parsing_request(std::string request, int client_fd);
+int handle_requests(std::vector<std::string> data, int client_fd, std::vector<Location> locations);
+int parsing_request(std::string request, int client_fd, std::vector<Location> locations);
 std::vector<std::string> split(const std::string &s, char delim);
 int parserConfig(std::vector<Server>& server, std::string path_configfile);
 int parse_upload(const std::string& formData, int client_fd);
+std::string parseMultipartFormData(const std::string& formData);
 
 
 class ErrorConfigFileException : public std::exception
@@ -103,6 +105,12 @@ class PipeFailedException : public std::exception
 {
     const char * what () const throw () {return ("Pipe failed") ;}
 };
+
+class InvalidFormDataException : public std::exception
+{
+    const char * what () const throw () {return ("Invalid form data") ;}
+};
+
 
 #endif
 

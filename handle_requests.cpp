@@ -52,12 +52,32 @@ int handle_get(std::string path, int client_socket)
     return 1;
 }
 
-int handle_requests(std::vector<std::string> data, int client_fd)
+int SearchLocation(std::string path, std::vector<Location> locations)
 {
-    std::cout << data[1] << std::endl;
-    size_t pos = data[1].find("Users");
-    if (pos != std::string::npos)
-        data[1].replace(pos, 5, "html");
+    for (size_t i = 0; i < locations.size(); i++)
+    {
+        size_t foundPos = path.find(locations[i].getPath());
+        if (foundPos == 0) 
+        { // Vérifiez si le chemin commence par locationPath
+            size_t endPos = locations[i].getPath().size();
+            if (endPos == path.size() || (endPos < path.size() && path[endPos] == '/')) 
+                return i;  // Vérifiez que le chemin est à la fin ou suivi par '/'
+        }
+    }
+    return (-1);
+}
+
+int handle_requests(std::vector<std::string> data, int client_fd, std::vector<Location> locations)
+{
+    //std::cout << data[1] << std::endl;
+    int i = SearchLocation(data[1], locations);
+    std::cout << "index = " << i << std::endl;
+    if (i != -1)
+    {
+        data[1].replace(data[1].find(locations[i].getPath()), locations[i].getPath().length(), locations[i].getRoot());
+        data[1].insert(0, "/");
+    }
+    std::cout << "data[1] = " << data[1] << std::endl;
     if (data[0] == "GET") {
         handle_get(data[1], client_fd);
     /*} else if (data[0] == "POST") {

@@ -1,7 +1,7 @@
 #include "Server.hpp"
 #define BUFFER_SIZE 512
 
-void handle_client(size_t max_body_size, int client_socket) 
+void handle_client(size_t max_body_size, int client_socket, std::vector<Location> locations) 
 {
     char buffer[BUFFER_SIZE];
     long long bytes_received = 0;
@@ -32,7 +32,7 @@ void handle_client(size_t max_body_size, int client_socket)
     } while (static_cast<unsigned long>(bytes_received) >= sizeof(buffer) - 1);
     
     //std::cout << "Request:\n" << request << std::endl << request.size() << std::endl;
-    parsing_request(request, client_socket);
+    parsing_request(request, client_socket, locations);
 }
 
 std::string check_configfile(std::string path_configfile)
@@ -110,7 +110,7 @@ int main(int ac, char **ar)
                     client_fd = server[i].getClientSocket(j);
                     if (FD_ISSET(client_fd, &read_fds)) 
                     {
-                        handle_client(server[i].getBodySize(), client_fd);
+                        handle_client(server[i].getBodySize(), client_fd, server[i].getVecLocation());
                         close(client_fd);
                         FD_CLR(client_fd, &read_fds);
                         FD_CLR(client_fd, &master_fds);

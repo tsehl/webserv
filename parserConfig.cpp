@@ -1,6 +1,7 @@
 #include "webserv.hpp"
 #include "Server.hpp"
 
+
 int is_double(std::string line, std::vector<std::string> tab_keys)
 {
     for (size_t i = 0; i < tab_keys.size(); i++)
@@ -362,12 +363,12 @@ int is_location(std::vector<std::string> &tab_lines, std::vector<std::string> &t
 {
     if (tab_lines[0].compare("location") != 0)
         return (0);
-    struct stat buffer;
+    //struct stat buffer;
     std::string path = tab_lines[1];
     if (is_double(path, tab_paths_location))
         return (0);
-    if (!(stat(path.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode)))
-        return (0);
+    /*if (!(stat(path.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode)))
+        return (0);*/
     if (tab_lines[2].compare("{") != 0)
         return (0);
     return (1);
@@ -386,7 +387,8 @@ int check_line(std::string line, std::vector<Server>& server, std::vector<std::s
     {
         tab_paths_location.push_back(tab_lines[1]);
         std::vector<std::string> tab_keys_location;
-        vec_location.push_back(Location());
+        std::cout << "location : " << tab_lines[1] << std::endl;
+        vec_location.push_back(Location(tab_lines[1]));
         while (std::getline(*configfile, line) && !is_closed(line))
         {
             std::vector<std::string> tab_lines_location;

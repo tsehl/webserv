@@ -1,14 +1,15 @@
 #ifndef LOCATION_HPP
-#define LOCATION_HPP
+# define LOCATION_HPP
 
-#include <map>
-#include "webserv.hpp"
+# include <map>
+# include "webserv.hpp"
 
 class Location {
 
     public:
 
         Location();
+        Location(std::string path);
         ~Location();
         Location(const Location& other);
         Location& operator=(const Location& other);
@@ -17,6 +18,7 @@ class Location {
         int getAllowPost() const;
         int getAllowDelete() const;
         int getAutonindex() const;
+        std::string getPath() const;
         std::string getRoot() const;
         std::string getIndex() const;
         std::string getUploadStore() const;
@@ -28,6 +30,7 @@ class Location {
         void setAllowPost(int allow_post);
         void setAllowDelete(int allow_delete);
         void setAutonindex(int autonindex);
+        void setPath(const std::string& path);
         void setRoot(const std::string& root);
         void setIndex(const std::string& index);
         void setUploadStore(const std::string& upload_store);
@@ -41,6 +44,7 @@ class Location {
         int _allow_post;
         int _allow_delete;
         int _autonindex;
+        std::string _path;
         std::string _root;
         std::string _index;
         std::string _upload_store;
