@@ -29,12 +29,13 @@ class Server;
 class Location;
 
 int handle_requests(std::vector<std::string> data, int client_fd, std::vector<Location> locations, Server server);
-int parsing_request(std::string request, int client_fd, Server server);
+int parsing_request(std::string request, int client_fd, Server server, std::vector<Location> locations);
 std::vector<std::string> split(const std::string &s, char delim);
 std::string findHost(const std::string& request);
 int parserConfig(std::vector<Server>& server, std::string path_configfile);
 int parse_upload(const std::string& formData, int client_fd);
 std::string parseMultipartFormData(const std::string& formData);
+int SearchLocation(std::string path, std::vector<Location> locations);
 
 
 class ErrorConfigFileException : public std::exception

@@ -72,19 +72,21 @@ void handle_cgi_script(int client_socket, std::string script_path, std::string r
 }
 
 
-
-
-
-
-int parsing_request(std::string request, int client_fd, Server server)
+int parsing_request(std::string request, int client_fd, Server server, std::vector<Location> locations)
 {
     if(isspace(request[0]))
         return 0;
     std::vector<std::string> data = split(request, ' ');
+    int i = SearchLocation(data[1], locations);
     /*std::cout << data[0] << std::endl;
     std::cout << data[1] << std::endl;*/
+    if (i == -1 && data[0] == "POST" && server.getAllowPost())
+       handle_cgi_script(client_fd, data[1], request);
     if (is_cgi_script(data[1]))
-        handle_cgi_script(client_fd, data[1], request);
+    {
+        if (i != -1 && data[0] == "POST" && locations[i].getAllowPost())
+            handle_cgi_script(client_fd, data[1], request);
+    }
     else
         handle_requests(data, client_fd, server.getVecLocation(), server);
     return 1;

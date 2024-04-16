@@ -101,14 +101,20 @@ int handle_requests(std::vector<std::string> data, int client_fd, std::vector<Lo
         data[1].replace(data[1].find(locations[i].getPath()), locations[i].getPath().length(), locations[i].getRoot());
         data[1].insert(0, "/");
     }
-    if (data[0] == "GET")
+    if (data[0] == "GET" && i != -1)
+    {
+        if (locations[i].getAllowGet())
+            handle_get(data[1], client_fd);
+    }
+    else if (data[0] == "DELETE" && i != -1)
+    {   
+        if (locations[i].getAllowDelete())
+            handle_delete(data[1], client_fd);
+    }
+    if (i == -1 && data[0] == "GET" && server.getAllowGet())
         handle_get(data[1], client_fd);
-    else if (data[0] == "DELETE")
+    else if (i == -1 && data[0] == "DELETE" && server.getAllowDelete())
         handle_delete(data[1], client_fd);
-    /*} else if (data[0] == "POST") {
-        std::cout << "Vous avez choisi 2" << std::endl;
-    } else if (data[0] == "DELETE") {
-        std::cout << "Vous avez choisi 3" << std::endl;*/
     else
         return (0);
     return (1);

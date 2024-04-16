@@ -35,7 +35,7 @@ void handle_client(int index, int client_socket, std::vector<Server> server)
 
     std::string host = findHost(request);
 
-    parsing_request(request, client_socket, server[index]);
+    parsing_request(request, client_socket, server[index], server[index].getVecLocation());
 }
 
 std::string check_configfile(std::string path_configfile)
