@@ -387,7 +387,7 @@ int check_line(std::string line, std::vector<Server>& server, std::vector<std::s
     {
         tab_paths_location.push_back(tab_lines[1]);
         std::vector<std::string> tab_keys_location;
-        std::cout << "location : " << tab_lines[1] << std::endl;
+        //std::cout << "location : " << tab_lines[1] << std::endl;
         vec_location.push_back(Location(tab_lines[1]));
         while (std::getline(*configfile, line) && !is_closed(line))
         {

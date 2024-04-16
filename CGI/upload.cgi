@@ -1,37 +1,40 @@
 import sys
+import os
 
-def create_file(data):
-    # Supprimer les espaces en début et fin de la chaîne de données
-    data = data.strip()
+def process_form_data(temp_file_path):
+    with open(temp_file_path, 'rb') as temp_file:
+        # Lire les données du fichier temporaire en mode binaire
+        form_data = temp_file.read()
 
-    # Trouver l'index du début du contenu du fichier
-    file_content_start_index = data.find('\n\n') + 2
+        # Séparer les en-têtes et le contenu du formulaire
+        headers, form_content = form_data.split(b'\r\n\r\n', 1)
 
-    # Extraire le nom du fichier
-    filename_start_index = data.find('filename="') + len('filename="')
-    filename_end_index = data.find('"', filename_start_index)
-    filename = data[filename_start_index:filename_end_index]
+        # Extraire le nom du fichier du header Content-Disposition
+        filename_start_index = headers.find(b'filename="') + len(b'filename="')
+        filename_end_index = headers.find(b'"', filename_start_index)
+        filename = headers[filename_start_index:filename_end_index]
 
-    # Trouver l'index de fin du contenu du fichier
-    file_content_end_index = data.rfind('\n')
+        # Écrire le contenu du formulaire dans le fichier correspondant au nom du fichier
+        with open(filename, 'wb') as file_from_form:
+            file_from_form.write(form_content)
 
-    # Extraire le contenu du fichier
-    file_content = data[file_content_start_index:file_content_end_index]
+        print(f"Fichier {filename} créé avec succès.")
 
-    # Écrire le contenu dans le fichier
-    with open(filename, 'w') as file:
-        file.write(file_content)
+def main():
+    # Assurez-vous qu'un seul argument est passé au script, le chemin du fichier temporaire
+    if len(sys.argv) != 2:
+        print("Usage: python script.py [temp_file_path]")
+        sys.exit(1)
 
-    print(f"Fichier {filename} créé avec succès.")
+    # Récupérer le chemin du fichier temporaire à partir des arguments
+    temp_file_path = sys.argv[1]
 
-# Vérifier si les données du formulaire sont fournies en argument
-if len(sys.argv) != 2:
-    print("Veuillez fournir les données du formulaire en argument.")
-    sys.exit(1)
+    # Traiter les données du formulaire
+    process_form_data(temp_file_path)
 
-# Récupérer les données du formulaire à partir des arguments
-form_data = sys.argv[1]
+    # Supprimer le fichier temporaire une fois le traitement terminé
+    os.remove(temp_file_path)
 
-# Créer le fichier en utilisant les données du formulaire
-create_file(form_data)
+if __name__ == "__main__":
+    main()
 

@@ -1,7 +1,7 @@
 #include "Server.hpp"
 #define BUFFER_SIZE 512
 
-void handle_client(size_t max_body_size, int client_socket, std::vector<Location> locations) 
+void handle_client(int index, int client_socket, std::vector<Server> server) 
 {
     char buffer[BUFFER_SIZE];
     long long bytes_received = 0;
@@ -17,7 +17,7 @@ void handle_client(size_t max_body_size, int client_socket, std::vector<Location
         {
             buffer[bytes_received] = '\0';
             request.append(buffer);
-            if (request.length() > max_body_size) 
+            if (request.length() > server[index].getBodySize()) 
             {
                 std::cout << "La taille de la requête dépasse la limite autorisée.\n";
                 request = "GET /html/400.html HTTP/1.1";
@@ -31,8 +31,11 @@ void handle_client(size_t max_body_size, int client_socket, std::vector<Location
         }
     } while (static_cast<unsigned long>(bytes_received) >= sizeof(buffer) - 1);
     
-    //std::cout << "Request:\n" << request << std::endl << request.size() << std::endl;
-    parsing_request(request, client_socket, locations);
+    std::cout << "Request:\n" << request << std::endl << request.size() << std::endl;
+
+    std::string host = findHost(request);
+
+    parsing_request(request, client_socket, server[index]);
 }
 
 std::string check_configfile(std::string path_configfile)
@@ -99,7 +102,7 @@ int main(int ac, char **ar)
                         std::cerr << "Erreur lors de l'acceptation de la connexion client" << std::endl;
                 if (server[i].getLastClientSocket() > max_fd)
                     max_fd = server[i].getLastClientSocket();
-                //std::cout << "Nouvelle connexion sur le serveur " << i << std::endl;
+                std::cout << "Nouvelle connexion sur le serveur " << i << std::endl;
                 FD_SET(server[i].getLastClientSocket(), &master_fds); 
                 }
             }
@@ -107,10 +110,11 @@ int main(int ac, char **ar)
             {
                 for (size_t j = 0; j < server[i].getClientSocket().size(); ++j) 
                 {
+                    std::cout << "client_fd = " << server[i].getClientSocket(j) << std::endl;
                     client_fd = server[i].getClientSocket(j);
                     if (FD_ISSET(client_fd, &read_fds)) 
                     {
-                        handle_client(server[i].getBodySize(), client_fd, server[i].getVecLocation());
+                        handle_client(i, client_fd, server);
                         close(client_fd);
                         FD_CLR(client_fd, &read_fds);
                         FD_CLR(client_fd, &master_fds);
