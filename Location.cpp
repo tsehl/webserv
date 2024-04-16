@@ -33,6 +33,7 @@ Location::Location(const Location& other)
     _path(other._path),
     _root(other._root),
     _index(other._index),
+    _defaultP(other._defaultP),
     _upload_store(other._upload_store),
     _cgi_bin(other._cgi_bin),
     _map_return(other._map_return),
@@ -89,6 +90,11 @@ std::string Location::getIndex() const
     return _index;
 }
 
+std::string Location::getDefaultP() const
+{
+    return _defaultP;
+}
+
 std::string Location::getUploadStore() const 
 {
     return _upload_store;
@@ -132,6 +138,11 @@ void Location::setAllowDelete(int allow_delete)
 void Location::setAutonindex(int autonindex) 
 {
     _autonindex = autonindex;
+}
+
+void Location::setDefaultP(const std::string& defaultP) 
+{
+    _defaultP = defaultP;
 }
 
 void Location::setRoot(const std::string& root) 

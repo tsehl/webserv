@@ -21,6 +21,7 @@ class Location {
         std::string getPath() const;
         std::string getRoot() const;
         std::string getIndex() const;
+        std::string getDefaultP() const;
         std::string getUploadStore() const;
         std::string getCgiBin() const;
         std::map<std::string, std::string> getMapReturn() const;
@@ -33,6 +34,7 @@ class Location {
         void setPath(const std::string& path);
         void setRoot(const std::string& root);
         void setIndex(const std::string& index);
+        void setDefaultP(const std::string& defaultP); 
         void setUploadStore(const std::string& upload_store);
         void setCgiBin(const std::string& cgi_bin);
         void setMapReturn(const std::map<std::string, std::string>& map_return);
@@ -47,6 +49,7 @@ class Location {
         std::string _path;
         std::string _root;
         std::string _index;
+        std::string _defaultP;
         std::string _upload_store;
         std::string _cgi_bin;
         std::map<std::string, std::string> _map_return;

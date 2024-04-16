@@ -297,6 +297,12 @@ int check_values_location(std::vector<std::string> &tab_lines_location, std::vec
             vec_location.back().setIndex(tab_lines_location[1]);
         return (1);
     }
+    if (tab_lines_location[0].compare("defaultP") == 0 && !is_double(tab_lines_location[0], tab_keys_location))
+    {
+        if (check_index(tab_lines_location[1]))
+            vec_location.back().setDefaultP(tab_lines_location[1]);
+        return (1);
+    }
     if (tab_lines_location[0].compare("autoindex") == 0 && !is_double(tab_lines_location[0], tab_keys_location))
     {
         if (check_autoindex(tab_lines_location[1]))
